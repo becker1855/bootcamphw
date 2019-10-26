@@ -1,0 +1,111 @@
+Sub stockmrkt():
+
+    For Each ws In Worksheets
+
+    Dim symbolname As String
+
+    Dim symbolvolume As Double
+
+    symbolvolume = 0
+
+    Dim openprice As Double
+
+    openprice = 0
+
+    Dim closeprice As Double
+
+    closeprice = 0
+
+    Dim Summarytablerow As Integer
+
+    Summarytablerow = 2
+    
+    Dim percentagechange As Double
+    
+    percentagechange = 0
+    
+    Dim greatestincrease As Double
+    
+    Dim greatestdecrease As Double
+    
+    greatestdecrease = 0
+    
+    Dim mrktvolume As Double
+    
+    mrktvolume = 0
+    
+    ws.Range("I1") = "symbol name"
+    ws.Range("J1") = "open price"
+    ws.Range("K1") = "close price"
+    ws.Range("L1") = "year change"
+    ws.Range("M1") = "percent change"
+    ws.Range("N1") = "total volume"
+    
+    
+    LastRow1 = ws.cells(Rows.Count, 1).End(xlUp).Row
+
+    For i = 2 To LastRow1
+
+        If cells(i + 1, 1).Value <> cells(i, 1).Value Then
+
+            symbolname = ws.cells(i, 1).Value
+
+            closeprice = ws.cells(i, 6).Value
+
+            ws.Range("I" & Summarytablerow).Value = symbolname
+
+            ws.Range("J" & Summarytablerow).Value = openprice
+
+            ws.Range("k" & Summarytablerow).Value = closeprice
+
+            ws.Range("N" & Summarytablerow).Value = symbolvolume
+
+            Summarytablerow = Summarytablerow + 1
+
+            symbolvolume = 0
+            
+            openprice = 0
+
+        Else
+
+            symbolvolume = symbolvolume + ws.cells(i, 7).Value
+    
+            If openprice = 0 Then
+                openprice = ws.cells(i, 3).Value
+            End If
+    
+        End If
+
+    Next i
+    
+    LastRow = ws.cells(Rows.Count, 9).End(xlUp).Row
+    
+        For i = 2 To LastRow
+        
+            yearchange = ws.cells(i, 11).Value - ws.cells(i, 10).Value
+            ws.cells(i, 12).Value = yearchange
+            ws.cells(i, 12).NumberFormat = ("$#,##0.00")
+            percentagechange = (ws.cells(i, 11).Value / ws.cells(i, 10).Value) - 1
+            ws.cells(i, 13).Value = percentagechange
+            ws.cells(i, 13).NumberFormat = "0.00%"
+            
+            If ws.cells(i, 13).Value > 0 Then
+                ws.cells(i, 13).Interior.Color = RGB(0, 255, 0)
+                ElseIf ws.cells(i, 13).Value < 0 Then
+                    ws.cells(i, 13).Interior.Color = RGB(255, 0, 0)
+                Else
+        End If
+        greatestincrease = WorksheetFunction.Max(ws.Range("M2:M290"))
+        ws.Range("P2") = greatestincrease
+        ws.Range("O2") = "greatest increase"
+        ws.Range("P2").NumberFormat = "0.00"
+        greatestdecrease = WorksheetFunction.Min(ws.Range("M2:M290"))
+        ws.Range("P3") = greatestdecrease
+        ws.Range("O3") = "greatest decrease"
+        ws.Range("P3").NumberFormat = "0.00"
+        grtvolume = WorksheetFunction.Max(ws.Range("N2:N290"))
+        ws.Range("O4") = "greatest volume"
+        ws.Range("O4").NumberFormat = "0"
+    Next i
+    Next ws
+End Sub
